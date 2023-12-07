@@ -45,20 +45,7 @@ public class RateCalculator {
         }
         if (pickupCountry.equals("US")) {
             if (!pickupState.equals("CA") && !pickupState.equals("NY") && !pickupState.equals("NJ")) {
-                if (vehicleType.equals("city car")) {
-                    return dailyRate;
-                } else {
-                    switch (vehicleType) {
-                        case "economy":
-                            dailyRate = dailyRate.add(Money.of(45.00, "USD"));
-                            break;
-                        case "standard sedan":
-                            dailyRate = dailyRate.add(Money.of(55.00, "USD"));
-                            break;
-                        default:
-                            dailyRate = dailyRate.add(Money.of(75.00, "USD"));
-                    }
-                }
+                dailyRate = vehicleTypeDailyRate(dailyRate, vehicleType, pickupCountry, pickupState);
             } else if (pickupState.equals("CA")) {
                 if (!pickupCity.equals("San Francisco") && !pickupCity.equals("Los Angeles") && !pickupCity.equals("Sacramento")) {
                     if (vehicleType.equals("city car")) {
@@ -67,19 +54,7 @@ public class RateCalculator {
                         dailyRate = dailyRate.add(Money.of(28.00, "USD"));
                     }
                 } else {
-                    switch (vehicleType) {
-                        case "economy":
-                            dailyRate = dailyRate.add(Money.of(52.00, "USD"));
-                            break;
-                        case "standard sedan":
-                            dailyRate = dailyRate.add(Money.of(65.00, "USD"));
-                            break;
-                        case "luxury sedan":
-                            dailyRate = dailyRate.add(Money.of(105.00, "USD"));
-                            break;
-                        default:
-                            dailyRate = dailyRate.add(Money.of(95.00, "USD"));
-                    }
+                    dailyRate = caDailyRateNotCityCar(dailyRate, vehicleType, pickupCity);
                 }
             } else if (vehicleType.equals("city car")) {
                 if (pickupState.equals("NJ") || pickupState.equals("NY")) {
@@ -474,6 +449,39 @@ public class RateCalculator {
         return dailyRate;
     }
 
+    Money vehicleTypeDailyRate(
+            Money dailyRate, String vehicleType, String pickupCountry, String pickupState) {
+        switch (vehicleType) {
+            case "city car":
+                break;
+            case "economy":
+                dailyRate = dailyRate.add(Money.of(45.00, "USD"));
+                break;
+            case "standard sedan":
+                dailyRate = dailyRate.add(Money.of(55.00, "USD"));
+                break;
+            default:
+                dailyRate = dailyRate.add(Money.of(75.00, "USD"));
+        }
+        return dailyRate;
+    }
+
+    Money caDailyRateNotCityCar(Money dailyRate, String vehicleType, String pickupCity) {
+        switch (vehicleType) {
+            case "economy":
+                dailyRate = dailyRate.add(Money.of(52.00, "USD"));
+                break;
+            case "standard sedan":
+                dailyRate = dailyRate.add(Money.of(65.00, "USD"));
+                break;
+            case "luxury sedan":
+                dailyRate = dailyRate.add(Money.of(105.00, "USD"));
+                break;
+            default:
+                dailyRate = dailyRate.add(Money.of(95.00, "USD"));
+        }
+        return dailyRate;
+    }
     public Money calculateAirportFee(
             String pickupCountry,
             String pickupState,
